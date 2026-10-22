@@ -1,41 +1,80 @@
-"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
-
-"Indicates what fields are available at the top level of a query operation."
-type Query {
-    "Find a single user by an identifying attribute."
-    user(
-      "Search by primary key."
-      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
-
-      "Search by email address."
-      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
-    ): User @find
-
-    "List multiple users."
-    users(
-      "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-      name: String @where(operator: "like")
-    ): [User!]! @paginate(defaultCount: 10)
+"A day-by-day breakdown of activities in a tour."
+type ItineraryDay {
+    day: Int!
+    title: String!
+    description: String
+    meals: [String!]
 }
 
-"Account of a person who uses this application."
-type User {
-    "Unique primary key."
+"The primary Tour entity."
+type Tour {
     id: ID!
-
-    "Non-unique name."
-    name: String!
-
-    "Unique email address."
-    email: String!
-
-    "When the email was verified."
-    email_verified_at: DateTime
-
-    "When the account was created."
+    title: String!
+    slug: String!
+    summary: String
+    description: String
+    destination: String!
+    region: String
+    duration_days: Int!
+    duration_nights: Int!
+    formatted_duration: String
+    max_group_size: Int
+    price: Float!
+    formatted_price: String
+    currency: String!
+    itinerary: [ItineraryDay!]
+    inclusions: [String!]
+    exclusions: [String!]
+    featured_image: String
+    gallery: [String!]
+    is_featured: Boolean!
+    is_active: Boolean!
     created_at: DateTime!
-
-    "When the account was last updated."
     updated_at: DateTime!
+}
+
+"Input filters for searching and refining tours."
+input TourFilterInput {
+    destination: String
+    min_price: Float
+    max_price: Float
+    is_featured: Boolean
+    duration_days: Int
+    sort_by_price: SortOrder
+}
+
+enum SortOrder {
+    ASC
+    DESC
+}
+
+type Query {
+    "Fetch a paginated list of active tours with custom filters."
+    tours(
+        filter: TourFilterInput
+    ): [Tour!]! 
+        @paginate(builder: "App\\GraphQL\\Queries\\TourResolver@tours")
+
+    "Fetch a single tour by either its unique ID or URL slug."
+    tour(
+        id: ID
+        slug: String
+    ): Tour 
+        @field(resolver: "App\\GraphQL\\Queries\\TourResolver@find")
+}
+
+"Represents an aggregated destination showcase on the homepage."
+type PopularDestination {
+    name: String!
+    region: String
+    image: String
+    total_tours: Int!
+    starting_price: Float!
+    currency: String!
+}
+
+extend type Query {
+    "Fetches top Malaysian destinations, cached in Redis."
+    popularDestinations(limit: Int = 6): [PopularDestination!]!
+        @field(resolver: "App\\GraphQL\\Queries\\PopularDestinationsResolver")
 }
