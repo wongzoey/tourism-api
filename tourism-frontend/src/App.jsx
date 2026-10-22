@@ -35,6 +35,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import LandingPage from './LandingPage.jsx';
+// import BookingModal from './BookingModal.jsx';
 
 const client = new ApolloClient({
   link: new HttpLink({

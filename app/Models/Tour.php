@@ -129,4 +129,17 @@ class Tour extends Model
             )
         );
     }
+
+    public function getFormattedPriceAttribute()
+    {
+        return $this->currency . ' ' . number_format($this->price, 2);
+    }
+
+    public function getFormattedDurationAttribute()
+    {
+        if ($this->duration_nights == 0) {
+            return $this->duration_days . ' Day Tour';
+        }
+        return $this->duration_days . ' Days, ' . $this->duration_nights . ' Nights';
+    }
 }
