@@ -1,9 +1,13 @@
+
 import React from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import ToursCatalog from './ToursCatalog';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+import ToursCatalog from './ToursCatalog.jsx';
 
 const client = new ApolloClient({
-  uri: 'http://your-laravel-domain.test/graphql',
+  link: new HttpLink({
+    uri: 'http://127.0.0.1:8000/graphql',
+  }),
   cache: new InMemoryCache(),
 });
 
@@ -14,7 +18,12 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <main style={{ backgroundColor: '#faf8f5', minHeight: '100vh' }}>
+      <main
+        style={{
+          backgroundColor: '#faf8f5',
+          minHeight: '100vh',
+        }}
+      >
         <ToursCatalog onSelectTour={handleBooking} />
       </main>
     </ApolloProvider>

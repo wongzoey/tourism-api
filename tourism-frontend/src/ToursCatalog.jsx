@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+// import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
+import { gql } from '@apollo/client';
 import './ToursCatalog.css';
 
 // GraphQL query matching our schema and filter inputs

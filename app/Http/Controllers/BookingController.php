@@ -51,7 +51,7 @@ class BookingController extends Controller
                 // 4. Verify that capacity is not exceeded
                 $availableSlots = $tour->max_group_size 
                     ? ($tour->max_group_size - $bookedGuestsCount) 
-                    : PHP_INT_MAX;
+                    : \PHP_INT_MAX;
 
                 if ($requestedGuests > $availableSlots) {
                     throw ValidationException::withMessages([
