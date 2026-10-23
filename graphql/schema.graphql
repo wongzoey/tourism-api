@@ -1,3 +1,6 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
 "A day-by-day breakdown of activities in a tour."
 type ItineraryDay {
     day: Int!
@@ -77,4 +80,31 @@ extend type Query {
     "Fetches top Malaysian destinations, cached in Redis."
     popularDestinations(limit: Int = 6): [PopularDestination!]!
         @field(resolver: "App\\GraphQL\\Queries\\PopularDestinationsResolver")
+}
+
+type Mutation {
+    createBooking(
+        tour_id: ID!
+        customer_name: String!
+        customer_email: String!
+        start_date: Date!
+        total_price: Float!
+        status: String!
+    ): Booking @create
+}
+
+type Booking {
+    id: ID!
+    tour_id: ID!
+    customer_name: String!
+    customer_email: String!
+    start_date: Date!
+    total_price: Float!
+    status: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+extend type Query {
+    askChatbot(message: String!): String!
 }

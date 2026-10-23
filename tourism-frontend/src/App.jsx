@@ -1,41 +1,10 @@
-
-// import React from 'react';
-// import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
-// import { ApolloProvider } from '@apollo/client/react';
-// import ToursCatalog from './ToursCatalog.jsx';
-
-// const client = new ApolloClient({
-//   link: new HttpLink({
-//     uri: 'http://127.0.0.1:8000/graphql',
-//   }),
-//   cache: new InMemoryCache(),
-// });
-
-// export default function App() {
-//   const handleBooking = (tour) => {
-//     alert(`Starting booking reservation for: ${tour.title}`);
-//   };
-
-//   return (
-//     <ApolloProvider client={client}>
-//       <main
-//         style={{
-//           backgroundColor: '#faf8f5',
-//           minHeight: '100vh',
-//         }}
-//       >
-//         <ToursCatalog onSelectTour={handleBooking} />
-//       </main>
-//     </ApolloProvider>
-//   );
-// }
-
-
-
+import { useState } from 'react';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import LandingPage from './LandingPage.jsx';
-// import BookingModal from './BookingModal.jsx';
+// import ToursCatalog from './ToursCatalog.jsx';
+import BookingModal from './BookingModal.jsx';
+import Chatbot from './Chatbot.jsx';
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -45,13 +14,27 @@ const client = new ApolloClient({
 });
 
 export default function App() {
+  // State to track which tour the user wants to book
+  const [selectedTour, setSelectedTour] = useState(null);
+
+  // Triggered when the "Book Now" button is clicked inside LandingPage
   const handleBooking = (tour) => {
-    alert(`Starting booking reservation for: ${tour.title}`);
+    setSelectedTour(tour);
   };
 
   return (
     <ApolloProvider client={client}>
+      {/* Your main landing page */}
       <LandingPage onSelectTour={handleBooking} />
+      
+      {/* Render the modal overlay only if a tour is currently selected */}
+      {selectedTour && (
+        <BookingModal 
+          tour={selectedTour} 
+          onClose={() => setSelectedTour(null)} 
+        />
+      )}
+      <Chatbot />
     </ApolloProvider>
   );
 }

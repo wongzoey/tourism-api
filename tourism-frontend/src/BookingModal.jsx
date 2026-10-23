@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import './ToursCatalog.css'; // Reusing your existing styles
+import { useMutation } from '@apollo/client/react';
+import { gql } from '@apollo/client';
 
 // The GraphQL mutation to send data to your Laravel backend
 const CREATE_BOOKING_MUTATION = gql`
-  mutation CreateBooking($tour_id: ID!, $customer_name: String!, $customer_email: String!, $travel_date: Date!, $total_price: Float!) {
+  mutation CreateBooking($tour_id: ID!, $customer_name: String!, $customer_email: String!, $start_date: Date!, $total_price: Float!) {
     createBooking(
       tour_id: $tour_id
       customer_name: $customer_name
       customer_email: $customer_email
-      travel_date: $travel_date
+      start_date: $start_date
       total_price: $total_price
-      status: "pending"
+      status: "pending_payment"
     ) {
       id
       status
@@ -25,6 +25,7 @@ export default function BookingModal({ tour, onClose }) {
   // Hook up the mutation
   const [createBooking, { loading, error, data }] = useMutation(CREATE_BOOKING_MUTATION);
 
+// Inside your BookingModal component:
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -33,14 +34,15 @@ export default function BookingModal({ tour, onClose }) {
           tour_id: tour.id,
           customer_name: formData.name,
           customer_email: formData.email,
-          travel_date: formData.date,
-          total_price: tour.price // Sending the base price for now
+          start_date: formData.date, // Mapped to start_date
+          total_price: tour.price
         }
       });
     } catch (err) {
       console.error("Booking failed", err);
     }
   };
+
 
   // If successful, show a confirmation message
   if (data) {

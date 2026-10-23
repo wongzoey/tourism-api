@@ -503,7 +503,7 @@ export const bottomMarkup = `
 
     <div class="footer-bottom">
       <p>
-        &copy; 2026 Tourism Malaysia. All rights reserved.
+        &copy; 2026 MYTour. All rights reserved.
         Designed for travelers worldwide.
       </p>
     </div>
